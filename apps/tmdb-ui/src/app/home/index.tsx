@@ -22,11 +22,11 @@ const Home: FC = () => {
             paired with Real Debrid.
           </Text>
           <ImagePreviews interval={5000}>
-            <Image h="480px" src="/preview_1.png" alt="preview_1" />
-            <Image h="480px" src="/preview_2.png" alt="preview_2" />
-            <Image h="480px" src="/preview_3.png" alt="preview_3" />
-            <Image h="480px" src="/preview_4.png" alt="preview_4" />
-            <Image h="480px" src="/preview_5.png" alt="preview_5" />
+            <Image h="480px" src="./preview_1.png" alt="preview_1" />
+            <Image h="480px" src="./preview_2.png" alt="preview_2" />
+            <Image h="480px" src="./preview_3.png" alt="preview_3" />
+            <Image h="480px" src="./preview_4.png" alt="preview_4" />
+            <Image h="480px" src="./preview_5.png" alt="preview_5" />
           </ImagePreviews>
         </HStack>
 
