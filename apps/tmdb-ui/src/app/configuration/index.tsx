@@ -34,7 +34,7 @@ function Configuration() {
 
   const handleOnInstall = useCallback(() => {
     const config = JSON.stringify({ rdApiKey: rdApiKey });
-    const downloadUrl = '';
+    const downloadUrl = 'https://github.com/androidplayer1/tmdb-ui/releases/download/1.0.0/tmdb.json';
 
     const queryData = encodeQueryData({
       config,
