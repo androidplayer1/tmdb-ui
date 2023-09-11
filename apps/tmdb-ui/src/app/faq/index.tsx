@@ -90,7 +90,7 @@ const Faq: FC = () => {
               </Box>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb={4}>{faq.answer}</AccordionPanel>
+            <AccordionPanel pb="4">{faq.answer}</AccordionPanel>
           </AccordionItem>
         ))}
       </Accordion>

@@ -14,8 +14,8 @@ import { ImagePreviews } from '../../component/image-previews.component';
 const Home: FC = () => {
   return (
     <Container>
-      <VStack gap={4}>
-        <HStack flexDirection={{ base: 'column', md: 'row' }} gap={4}>
+      <VStack gap="4">
+        <HStack flexDirection={{ base: 'column', md: 'row' }} gap="4">
           <Text fontSize="xl">
             Discover TMDB for AN Player and unlock a world of cinematic
             exploration, with the power to enjoy movies like never before when
@@ -30,7 +30,7 @@ const Home: FC = () => {
           </ImagePreviews>
         </HStack>
 
-        <HStack gap={4}>
+        <HStack gap="4">
           <Image h="100px" src="/git.png" alt="git" />
           <Text fontSize="xl">
             Explore with peace of mind! TMDB is fully open source and safeguards
@@ -39,7 +39,7 @@ const Home: FC = () => {
           </Text>
         </HStack>
 
-        <Button mt={4} as={TanstackLink} to="/configuration">
+        <Button mt="4" as={TanstackLink} to="/configuration">
           Get TMDB Plugin
         </Button>
       </VStack>

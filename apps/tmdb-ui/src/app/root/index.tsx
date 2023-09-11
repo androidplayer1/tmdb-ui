@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 
 const Header: FC = () => {
   return (
-    <HStack w="full" h="16" p={4} gap={4} bg="brand.500" color="white">
+    <HStack w="full" h="16" p="4" gap="4" bg="brand.500" color="white">
       <Heading as={TanstackLink} to="/">
         TMDB
       </Heading>
@@ -20,7 +20,11 @@ const Header: FC = () => {
         FAQ
       </Link>
 
-      <Link color="white" as={TanstackLink} to="/github">
+      <Link
+        color="white"
+        href="https://github.com/androidplayer1/tmdb-ui"
+        target="_blank"
+      >
         Github
       </Link>
 
@@ -28,7 +32,11 @@ const Header: FC = () => {
         Docs
       </Link>
 
-      <Link color="white" as={TanstackLink} to="/releases">
+      <Link
+        color="white"
+        href="https://github.com/androidplayer1/tmdb-ui/releases"
+        target="_blank"
+      >
         Releases
       </Link>
     </HStack>
@@ -37,7 +45,7 @@ const Header: FC = () => {
 
 const Root: FC = () => {
   return (
-    <VStack w="full" h="full" gap={0}>
+    <VStack w="full" h="full" gap="0">
       <Header />
       <Box
         w="full"
