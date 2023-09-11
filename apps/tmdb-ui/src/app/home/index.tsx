@@ -31,7 +31,7 @@ const Home: FC = () => {
         </HStack>
 
         <HStack gap="4">
-          <Image h="100px" src="/git.png" alt="git" />
+          <Image h="100px" src="./git.png" alt="git" />
           <Text fontSize="xl">
             Explore with peace of mind! TMDB is fully open source and safeguards
             your data by not storing it on any third-party servers. Your movie

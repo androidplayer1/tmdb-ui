@@ -1,4 +1,4 @@
-import { Router } from '@tanstack/react-router';
+import { createHashHistory, Router } from '@tanstack/react-router';
 
 import { getConfigurationRoute } from './configuration';
 import { getFaqRoute } from './faq';
@@ -13,4 +13,7 @@ rootRoute.addChildren([
   getConfigurationRoute(rootRoute),
 ]);
 
-export const router = new Router({ routeTree: rootRoute });
+export const router = new Router({
+  routeTree: rootRoute,
+  history: createHashHistory(),
+});
