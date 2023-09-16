@@ -4,8 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npx nx serve tmdb-ui",
-    "build": "npx nx build tmdb-ui --configuration=production",
-    "build-gh": "npx nx build tmdb-ui --configuration=production --base=/tmdb-ui"
+    "build": "npx nx build tmdb-ui --configuration=production"
   },
   "private": true,
   "dependencies": {

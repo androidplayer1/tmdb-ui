@@ -18,6 +18,21 @@ import React, { useCallback, useState } from 'react';
 import TmdbPlugin from '../../assets/tmdb.json';
 import { downloadJsonStringAsFile, encodeQueryData } from '../../util';
 
+type TorrentSorting = 'none' | 'quality_seeder' | 'quality_size' | 'seeder';
+
+type TmdbExtractorConfig = Readonly<{
+  rdApiKey?: string;
+  providers?: string[];
+  sorting?: TorrentSorting;
+  excludeKeywords?: string[];
+}>;
+
+declare const anPlayer: {
+  getConfiguration(): string;
+  setConfiguration(configuration: string): boolean;
+  finish(): void;
+};
+
 const torrentProviders = [
   {
     id: '1337x',
@@ -45,28 +60,53 @@ const torrentProviders = [
   },
 ];
 
-type TorrentSorting = 'none' | 'quality_seeder' | 'quality_size' | 'seeder';
+const loadConfiguration: TmdbExtractorConfig = (() => {
+  try {
+    return JSON.parse(anPlayer.getConfiguration()) as TmdbExtractorConfig;
+  } catch (e) {
+    console.error(e);
+    return {
+      rdApiKey: '',
+      sorting: 'quality_seeder',
+      providers: torrentProviders.map((x) => x.id),
+    };
+  }
+})();
 
-type TmdbExtractorConfig = Readonly<{
-  rdApiKey?: string;
-  providers?: string[];
-  sorting?: TorrentSorting;
-  excludeKeywords?: string[];
-}>;
+const saveConfiguration = (configuration: TmdbExtractorConfig) => {
+  const configurationJson = JSON.stringify(configuration);
+  const result = anPlayer.setConfiguration(configurationJson);
+  if (result) {
+    anPlayer.finish();
+  }
+};
+
+const isLoadedFromAnPlayer = (() => {
+  try {
+    return !!anPlayer;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+})();
 
 function Configuration() {
-  const [rdApiKey, setRdApiKey] = useState('');
+  const [rdApiKey, setRdApiKey] = useState(loadConfiguration.rdApiKey);
 
   const [providers, setProviders] = useState(
     torrentProviders.map((x) => ({
       ...x,
-      checked: true,
+      checked: loadConfiguration.providers?.indexOf(x.id) !== -1,
     }))
   );
 
-  const [sorting, setSorting] = useState<TorrentSorting>('quality_seeder');
+  const [sorting, setSorting] = useState<TorrentSorting>(
+    loadConfiguration.sorting ?? 'seeder'
+  );
 
-  const [excludeKeywords, setExcludeKeywords] = useState('');
+  const [excludeKeywords, setExcludeKeywords] = useState(
+    loadConfiguration.excludeKeywords?.join(',') ?? ''
+  );
 
   const handleApiKeyChange = useCallback((e: string) => {
     setRdApiKey(e);
@@ -79,14 +119,20 @@ function Configuration() {
       providers: providers.filter((x) => x.checked).map((x) => x.id),
       excludeKeywords: excludeKeywords ? excludeKeywords.split(',') : undefined,
     };
-    console.log(config);
-    return JSON.stringify(config);
+    return config;
   }, [excludeKeywords, providers, rdApiKey, sorting]);
 
+  const handleOnSave = useCallback(() => {
+    const config = createConfig();
+    saveConfiguration(config);
+  }, [createConfig]);
+
   const handleOnDownload = useCallback(() => {
+    const config = createConfig();
+
     const configuredPlugin = {
       ...TmdbPlugin,
-      config: createConfig(),
+      config: JSON.stringify(config),
     };
 
     downloadJsonStringAsFile(
@@ -102,7 +148,7 @@ function Configuration() {
       'https://androidplayer1.github.io/tmdb-ui/assets/tmdb.json';
 
     const queryData = encodeQueryData({
-      config,
+      config: JSON.stringify(config),
       downloadUrl,
     });
 
@@ -188,12 +234,28 @@ function Configuration() {
         </FormControl>
 
         <HStack mt="4" gap="4">
-          <Button colorScheme="blue" type="submit" onClick={handleOnDownload}>
-            Download
-          </Button>
-          <Button colorScheme="brand" type="submit" onClick={handleOnInstall}>
-            Install
-          </Button>
+          {isLoadedFromAnPlayer ? (
+            <Button colorScheme="blue" type="submit" onClick={handleOnSave}>
+              Save
+            </Button>
+          ) : (
+            <>
+              <Button
+                colorScheme="blue"
+                type="submit"
+                onClick={handleOnDownload}
+              >
+                Download
+              </Button>
+              <Button
+                colorScheme="brand"
+                type="submit"
+                onClick={handleOnInstall}
+              >
+                Install
+              </Button>
+            </>
+          )}
         </HStack>
       </VStack>
     </Container>
