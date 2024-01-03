@@ -6,6 +6,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Link,
   Radio,
   RadioGroup,
   Stack,
@@ -25,6 +26,8 @@ type TmdbExtractorConfig = Readonly<{
   providers?: string[];
   sorting?: TorrentSorting;
   excludeKeywords?: string[];
+  includePeopleOnFeed: boolean;
+  includeTvShowsOnFeed: boolean;
 }>;
 
 declare const anPlayer: {
@@ -69,6 +72,8 @@ const loadConfiguration: TmdbExtractorConfig = (() => {
       rdApiKey: '',
       sorting: 'quality_seeder',
       providers: torrentProviders.map((x) => x.id),
+      includePeopleOnFeed: true,
+      includeTvShowsOnFeed: true,
     };
   }
 })();
@@ -93,6 +98,14 @@ const isLoadedFromAnPlayer = (() => {
 function Configuration() {
   const [rdApiKey, setRdApiKey] = useState(loadConfiguration.rdApiKey);
 
+  const [includePeopleOnFeed, setIncludePeopleOnFeed] = useState(
+    loadConfiguration.includePeopleOnFeed
+  );
+
+  const [includeTvShowsOnFeed, setIncludeTvShowsOnFeed] = useState(
+    loadConfiguration.includeTvShowsOnFeed
+  );
+
   const [providers, setProviders] = useState(
     torrentProviders.map((x) => ({
       ...x,
@@ -108,19 +121,24 @@ function Configuration() {
     loadConfiguration.excludeKeywords?.join(',') ?? ''
   );
 
-  const handleApiKeyChange = useCallback((e: string) => {
-    setRdApiKey(e);
-  }, []);
-
   const createConfig = useCallback(() => {
     const config: TmdbExtractorConfig = {
       rdApiKey,
       sorting,
       providers: providers.filter((x) => x.checked).map((x) => x.id),
       excludeKeywords: excludeKeywords ? excludeKeywords.split(',') : undefined,
+      includePeopleOnFeed,
+      includeTvShowsOnFeed,
     };
     return config;
-  }, [excludeKeywords, providers, rdApiKey, sorting]);
+  }, [
+    excludeKeywords,
+    includePeopleOnFeed,
+    includeTvShowsOnFeed,
+    providers,
+    rdApiKey,
+    sorting,
+  ]);
 
   const handleOnSave = useCallback(() => {
     const config = createConfig();
@@ -156,7 +174,7 @@ function Configuration() {
   }, [createConfig]);
 
   return (
-    <Container>
+    <Container p="4">
       <VStack spacing={4}>
         <Text fontSize="2xl" fontWeight="bold" mb="4">
           Configuration
@@ -218,19 +236,55 @@ function Configuration() {
           </Text>
         </FormControl>
 
+        <FormControl id="feeds">
+          <FormLabel>Feed</FormLabel>
+          <Stack spacing={2} direction="column">
+            <Checkbox
+              isChecked={includeTvShowsOnFeed}
+              onChange={(e) => setIncludeTvShowsOnFeed(e.target.checked)}
+            >
+              TV Shows
+            </Checkbox>
+
+            <Checkbox
+              isChecked={includePeopleOnFeed}
+              onChange={(e) => setIncludePeopleOnFeed(e.target.checked)}
+            >
+              People
+            </Checkbox>
+          </Stack>
+
+          <Text mt="4" fontSize="sm" color="gray.500">
+            Select what content to be shown on feeds
+          </Text>
+        </FormControl>
+
         <FormControl id="rdApiKey">
           <FormLabel>Real Debrid API Key</FormLabel>
           <Input
             type="text"
             name="rdApiKey"
             value={rdApiKey}
-            onChange={(e) => handleApiKeyChange(e.target.value)}
+            onChange={(e) => setRdApiKey(e.target.value)}
             placeholder="Enter your Real Debrid API key"
           />
-          <Text mt="4" fontSize="sm" color="gray.500">
-            Your Real Debrid API key is only stored on the device where the
-            plugin is installed and is not shared or stored elsewhere.
-          </Text>
+
+          <HStack gap="4">
+            <Text mt="4" fontSize="sm" color="gray.500">
+              Your Real Debrid API key is only stored on the device where the
+              plugin is installed and is not shared or stored elsewhere.
+            </Text>
+
+            <Button
+              variant="link"
+              colorScheme="facebook"
+              as={Link}
+              href="https://real-debrid.com/apitoken"
+              isExternal
+            >
+              Get key
+            </Button>
+          </HStack>
         </FormControl>
 
         <HStack mt="4" gap="4">
