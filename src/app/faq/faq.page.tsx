@@ -70,7 +70,7 @@ const faqData = [
 
 export const FaqPage: FC = () => {
   return (
-    <Container w="2xl">
+    <Container maxW="2xl">
       <Text fontSize="2xl" fontWeight="bold" mb="4">
         Frequently Asked Questions
       </Text>

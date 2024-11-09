@@ -167,7 +167,7 @@ export function ConfigurationPage() {
   }, [createConfig]);
 
   return (
-    <Container w="2xl" p="4">
+    <Container maxW="2xl" p="4">
       <VStack gap={4} alignItems="stretch">
         <Text fontSize="2xl" fontWeight="bold" mb="4">
           Configuration

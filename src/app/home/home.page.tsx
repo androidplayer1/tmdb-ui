@@ -9,7 +9,7 @@ import { Button } from '../../components/button.tsx';
 
 export const HomePage: FC = () => {
   return (
-    <Container w="2xl">
+    <Container maxW="2xl">
       <VStack gap="4">
         <HStack flexDirection={{ base: 'column', md: 'row' }} gap="4">
           <Text fontSize="xl">

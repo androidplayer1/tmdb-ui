@@ -6,12 +6,10 @@ import { Image } from '../../components/image.tsx';
 
 const Header: FC = () => {
   return (
-    <HStack w="full" h="16" p="4" gap="6" bg="red.9">
+    <HStack w="full" h="16" p="4" gap="6" bg="red.9" justifyContent="center">
       <RouterLink to="/">
         <Image src="./logo.png" h="12" w="12" />
       </RouterLink>
-
-      <Box flex={1}></Box>
 
       <RouterLink to="/">
         <Link>Home</Link>

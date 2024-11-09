@@ -1,10 +1,5 @@
 import { FC } from 'react';
-import {
-  Container,
-  HStack,
-  Stack,
-  VStack,
-} from '../../components/styled-system/jsx';
+import { Container, Stack } from '../../components/styled-system/jsx';
 import { Text } from '../../components/text';
 import { Link } from '../../components/link';
 import { Image } from '../../components/image';
@@ -12,7 +7,7 @@ import { Button } from '../../components/button.tsx';
 
 export const DocsPage: FC = () => {
   return (
-    <Container w="2xl">
+    <Container maxW="2xl">
       <Text fontSize="2xl" fontWeight="bold" mb="4">
         Installing TMDB
       </Text>
