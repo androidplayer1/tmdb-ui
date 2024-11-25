@@ -19,7 +19,7 @@ const Header: FC = () => {
         <Link>TMDB</Link>
       </RouterLink>
 
-      <RouterLink to="/configuration">
+      <RouterLink to="/sport">
         <Link>SPORT</Link>
       </RouterLink>
 
