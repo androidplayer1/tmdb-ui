@@ -1,9 +1,9 @@
-import { FaqPage } from './faq/faq.page.tsx';
 import { HomePage } from './home/home.page.tsx';
 import { RootPage } from './root/root.page.tsx';
 import { createHashRouter } from 'react-router-dom';
 import { DocsPage } from './docs/docs.page.tsx';
-import { ConfigurationPage } from './configuration/configuration.page.tsx';
+import { TmdbPage } from './tmdb/tmdb.page.tsx';
+import { SportPage } from './sport/sport.page.tsx';
 
 export const router = createHashRouter([
   {
@@ -15,16 +15,20 @@ export const router = createHashRouter([
         element: <HomePage />,
       },
       {
-        path: '/faq',
-        element: <FaqPage />,
-      },
-      {
         path: '/docs',
         element: <DocsPage />,
       },
       {
         path: '/configuration',
-        element: <ConfigurationPage />,
+        element: <TmdbPage />,
+      },
+      {
+        path: '/tmdb',
+        element: <TmdbPage />,
+      },
+      {
+        path: '/sport',
+        element: <SportPage />,
       },
     ],
   },

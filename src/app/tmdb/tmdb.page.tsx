@@ -88,7 +88,7 @@ const isLoadedFromAnPlayer = (() => {
   }
 })();
 
-export function ConfigurationPage() {
+export function TmdbPage() {
   const [rdApiKey, setRdApiKey] = useState(loadConfiguration.rdApiKey);
 
   const [includePeopleOnFeed, setIncludePeopleOnFeed] = useState(

@@ -8,34 +8,23 @@ const Header: FC = () => {
   return (
     <HStack w="full" h="16" p="4" gap="6" bg="red.9" justifyContent="center">
       <RouterLink to="/">
-        <Image src="./logo.png" h="12" w="12" />
-      </RouterLink>
-
-      <RouterLink to="/">
         <Link>Home</Link>
-      </RouterLink>
-
-      <RouterLink to="/faq">
-        <Link>FAQ</Link>
       </RouterLink>
 
       <RouterLink to="/docs">
         <Link>Tutorial</Link>
       </RouterLink>
 
+      <RouterLink to="/tmdb">
+        <Link>TMDB</Link>
+      </RouterLink>
+
       <RouterLink to="/configuration">
-        <Link>Install</Link>
+        <Link>SPORT</Link>
       </RouterLink>
 
       <Link href="https://github.com/androidplayer1/tmdb-ui" target="_blank">
-        Github
-      </Link>
-
-      <Link
-        href="https://github.com/androidplayer1/tmdb-ui/releases"
-        target="_blank"
-      >
-        Releases
+        <Image src="./github.png" h="8" w="8" />
       </Link>
     </HStack>
   );
