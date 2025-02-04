@@ -11,12 +11,8 @@ const Header: FC = () => {
         <Link>Home</Link>
       </RouterLink>
 
-      <RouterLink to="/docs">
-        <Link>Tutorial</Link>
-      </RouterLink>
-
-      <RouterLink to="/tmdb">
-        <Link>TMDB</Link>
+      <RouterLink to="/torrentie">
+        <Link>Torrentie</Link>
       </RouterLink>
 
       <RouterLink to="/sport">

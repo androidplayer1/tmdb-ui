@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import TmdbPlugin from '../../assets/tmdb.json';
+import TorrentiePlugin from '../../assets/torrentie.json';
 import { downloadJsonStringAsFile, encodeQueryData } from '../../util';
 import {
   Container,
@@ -18,13 +18,11 @@ import { Link as RouterLink } from 'react-router-dom';
 
 type TorrentSorting = 'none' | 'quality_seeder' | 'quality_size' | 'seeder';
 
-type TmdbExtractorConfig = Readonly<{
+type TorrentieExtractorConfig = Readonly<{
   rdApiKey?: string;
   providers?: string[];
   sorting?: TorrentSorting;
   excludeKeywords?: string[];
-  includePeopleOnFeed: boolean;
-  includeTvShowsOnFeed: boolean;
 }>;
 
 declare const anPlayer: {
@@ -56,22 +54,20 @@ const torrentProviders = [
   },
 ];
 
-const loadConfiguration: TmdbExtractorConfig = (() => {
+const loadConfiguration: TorrentieExtractorConfig = (() => {
   try {
-    return JSON.parse(anPlayer.getConfiguration()) as TmdbExtractorConfig;
+    return JSON.parse(anPlayer.getConfiguration()) as TorrentieExtractorConfig;
   } catch (e) {
     console.error(e);
     return {
       rdApiKey: '',
       sorting: 'quality_seeder',
       providers: torrentProviders.map((x) => x.id),
-      includePeopleOnFeed: true,
-      includeTvShowsOnFeed: true,
     };
   }
 })();
 
-const saveConfiguration = (configuration: TmdbExtractorConfig) => {
+const saveConfiguration = (configuration: TorrentieExtractorConfig) => {
   const configurationJson = JSON.stringify(configuration);
   const result = anPlayer.setConfiguration(configurationJson);
   if (result) {
@@ -88,16 +84,8 @@ const isLoadedFromAnPlayer = (() => {
   }
 })();
 
-export function TmdbPage() {
+export function TorrentiePageTsx() {
   const [rdApiKey, setRdApiKey] = useState(loadConfiguration.rdApiKey);
-
-  const [includePeopleOnFeed, setIncludePeopleOnFeed] = useState(
-    loadConfiguration.includePeopleOnFeed,
-  );
-
-  const [includeTvShowsOnFeed, setIncludeTvShowsOnFeed] = useState(
-    loadConfiguration.includeTvShowsOnFeed,
-  );
 
   const [providers, setProviders] = useState(
     torrentProviders.map((x) => ({
@@ -115,23 +103,14 @@ export function TmdbPage() {
   );
 
   const createConfig = useCallback(() => {
-    const config: TmdbExtractorConfig = {
+    const config: TorrentieExtractorConfig = {
       rdApiKey,
       sorting,
       providers: providers.filter((x) => x.checked).map((x) => x.id),
       excludeKeywords: excludeKeywords ? excludeKeywords.split(',') : undefined,
-      includePeopleOnFeed,
-      includeTvShowsOnFeed,
     };
     return config;
-  }, [
-    excludeKeywords,
-    includePeopleOnFeed,
-    includeTvShowsOnFeed,
-    providers,
-    rdApiKey,
-    sorting,
-  ]);
+  }, [excludeKeywords, providers, rdApiKey, sorting]);
 
   const handleOnSave = useCallback(() => {
     const config = createConfig();
@@ -142,13 +121,13 @@ export function TmdbPage() {
     const config = createConfig();
 
     const configuredPlugin = {
-      ...TmdbPlugin,
+      ...TorrentiePlugin,
       config: JSON.stringify(config),
     };
 
     downloadJsonStringAsFile(
       JSON.stringify(configuredPlugin),
-      'tmdb-ui-' + (rdApiKey ?? '') + '.json',
+      'torrentie-ui-' + (rdApiKey ?? '') + '.json',
     );
   }, [createConfig, rdApiKey]);
 
@@ -156,7 +135,7 @@ export function TmdbPage() {
     const config = createConfig();
 
     const downloadUrl =
-      'https://androidplayer1.github.io/tmdb-ui/assets/tmdb.json';
+      'https://androidplayer1.github.io/tmdb-ui/assets/torrentie.json';
 
     const queryData = encodeQueryData({
       config: JSON.stringify(config),
@@ -247,37 +226,6 @@ export function TmdbPage() {
               />
               <Field.HelperText>
                 Filter out all torrents that contain any of specified keywords
-              </Field.HelperText>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-
-        <Card.Root variant="outline">
-          <Card.Header>
-            <Card.Title>Feed</Card.Title>
-          </Card.Header>
-          <Card.Body>
-            <Stack>
-              <Checkbox
-                checked={includeTvShowsOnFeed}
-                onCheckedChange={({ checked }) =>
-                  setIncludeTvShowsOnFeed(checked === true)
-                }
-              >
-                TV Shows
-              </Checkbox>
-
-              <Checkbox
-                checked={includePeopleOnFeed}
-                onCheckedChange={({ checked }) =>
-                  setIncludePeopleOnFeed(checked === true)
-                }
-              >
-                People
-              </Checkbox>
-
-              <Field.HelperText>
-                Select what content to be shown on feeds
               </Field.HelperText>
             </Stack>
           </Card.Body>

@@ -8,7 +8,7 @@ export const HomePage: FC = () => {
     <Container maxW="2xl">
       <HStack gap="4">
         <Button mt="4" flex="1" h="sm" asChild>
-          <RouterLink to="/tmdb">The Movie Database</RouterLink>
+          <RouterLink to="/torrentie">Torrentie</RouterLink>
         </Button>
 
         <Button mt="4" flex="1" h="sm" asChild>
