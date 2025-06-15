@@ -37,6 +37,10 @@ const torrentProviders = [
     url: 'https://1337x.to',
   },
   {
+    id: 'rarbg_torrentbay',
+    url: 'https://rarbg.torrentbay.st',
+  },
+  {
     id: 'kickass',
     url: 'https://kickasstorrent.cr',
   },
