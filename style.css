@@ -1,0 +1,358 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fafafa;
+  --bg-card: #fff;
+  --border: #e0e0e0;
+  --text: #1a1a1a;
+  --text-secondary: #666;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --input-bg: #fff;
+  --input-border: #ccc;
+  --toggle-bg: #ccc;
+  --toggle-active: var(--accent);
+  --section-gap: 1rem;
+  --radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+[data-theme="dark"] {
+  --bg: #111;
+  --bg-card: #1a1a1a;
+  --border: #333;
+  --text: #e5e5e5;
+  --text-secondary: #999;
+  --input-bg: #222;
+  --input-border: #444;
+  --toggle-bg: #444;
+}
+
+body { padding: 0; min-height: 100dvh; }
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.theme-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Sections */
+.section {
+  margin-bottom: var(--section-gap);
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.section-body {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+/* Toggle switch */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+}
+
+.toggle-row + .toggle-row {
+  border-top: 1px solid var(--border);
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+}
+
+.toggle-sublabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--toggle-bg);
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+.toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--toggle-active);
+}
+
+.toggle input:checked + .toggle-track::after {
+  left: 20px;
+}
+
+/* Radio group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.radio-item + .radio-item {
+  border-top: 1px solid var(--border);
+}
+
+.radio-item input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--input-border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.radio-item input[type="radio"]:checked {
+  border-color: var(--accent);
+}
+
+.radio-item input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+/* Inputs */
+.input-field {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.input-field::placeholder {
+  color: var(--text-secondary);
+}
+
+.input-field:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.input-row .input-field {
+  flex: 1;
+}
+
+/* Links */
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--bg);
+  border-color: var(--text-secondary);
+}
+
+/* Conditional sections */
+.conditional {
+  margin-top: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Debrid selector (segmented control) */
+.segmented {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.segmented label {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.segmented label:last-child {
+  border-right: none;
+}
+
+.segmented input {
+  display: none;
+}
+
+.segmented input:checked + span {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.segmented label:has(input:checked) {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .segmented label:has(input:checked) {
+  background: #2a2a2a;
+}
+
+/* Tutorial link */
+.tutorial-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.tutorial-link a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.tutorial-link a:hover {
+  text-decoration: underline;
+}

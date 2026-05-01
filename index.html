@@ -1,13 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Android Plugins</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Torrentie</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <div class="header">
+      <h1>Torrentie</h1>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">☀️</button>
+    </div>
+
+    <!-- Providers -->
+    <div class="section">
+      <div class="section-title">Providers</div>
+      <div class="section-body" id="providers"></div>
+    </div>
+
+    <!-- YTS -->
+    <div class="section">
+      <div class="section-title">YTS (Movies API)</div>
+      <div class="section-body">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Enable YTS</div>
+            <div class="toggle-sublabel">Movie torrents from YTS</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="ytsEnabled" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jackett -->
+    <div class="section">
+      <div class="section-title">Jackett</div>
+      <div class="section-body">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Enable Jackett</div>
+            <div class="toggle-sublabel">Search across many torrent sites at once</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="jackettEnabled">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="conditional hidden" id="jackettFields">
+          <div class="input-group" style="margin-top:0.5rem">
+            <input class="input-field" type="text" id="jackettUrl" placeholder="http://localhost:9117">
+            <input class="input-field" type="text" id="jackettApiKey" placeholder="Jackett API key">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sorting -->
+    <div class="section">
+      <div class="section-title">Sorting</div>
+      <div class="section-body">
+        <div class="radio-group" id="sorting">
+          <label class="radio-item">
+            <input type="radio" name="sorting" value="quality_seeder" checked>
+            <span>Quality then seeder</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="sorting" value="quality_size">
+            <span>Quality then size</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="sorting" value="seeder">
+            <span>Seeder</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="sorting" value="none">
+            <span>None</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relevance Sort -->
+    <div class="section">
+      <div class="section-title">Relevance Sort</div>
+      <div class="section-body">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Enable relevance sort</div>
+            <div class="toggle-sublabel">Prioritize results that best match the searched title</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="relevanceSort">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Excluded Keywords -->
+    <div class="section">
+      <div class="section-title">Excluded Keywords</div>
+      <div class="section-body">
+        <div class="input-group">
+          <input class="input-field" type="text" id="excludeKeywords" placeholder="480p, BRRip, CAM ...">
+          <div class="input-hint">Comma separated — filter out matching torrents</div>
+        </div>
+        <div class="toggle-row" style="margin-top:0.5rem">
+          <div>
+            <div class="toggle-label">Block adult content</div>
+            <div class="toggle-sublabel">Adds ~100 keywords to filter out XXX results</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="blockAdult">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="conditional hidden" id="adultKeywordsField">
+          <textarea class="input-field textarea" id="adultKeywords" rows="6"></textarea>
+          <div class="input-hint">Edit to add or remove adult filter keywords</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debrid Service -->
+    <div class="section">
+      <div class="section-title">Debrid Service</div>
+      <div class="section-body">
+        <div class="segmented" id="debridSelector">
+          <label>
+            <input type="radio" name="debridService" value="realdebrid" checked>
+            <span>RealDebrid</span>
+          </label>
+          <label>
+            <input type="radio" name="debridService" value="alldebrid">
+            <span>AllDebrid</span>
+          </label>
+        </div>
+
+        <div class="conditional" id="rdFields" style="margin-top:0.5rem">
+          <div class="input-group">
+            <div class="input-row">
+              <input class="input-field" type="text" id="rdApiKey" placeholder="RealDebrid API key">
+              <a class="link" href="https://real-debrid.com/apitoken" target="_blank" rel="noopener noreferrer">Get key</a>
+            </div>
+            <div class="input-hint">Only stored on the device where the plugin is installed</div>
+          </div>
+        </div>
+
+        <div class="conditional hidden" id="adFields" style="margin-top:0.5rem">
+          <div class="input-group">
+            <div class="input-row">
+              <input class="input-field" type="text" id="adApiKey" placeholder="AllDebrid API key">
+              <a class="link" href="https://alldebrid.com/apikeys" target="_blank" rel="noopener noreferrer">Get key</a>
+            </div>
+            <div class="input-hint">Only stored on the device where the plugin is installed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions" id="actions"></div>
+
+    <div class="tutorial-link">
+      Need help? <a href="https://anplayer.xeinebiu.com" target="_blank" rel="noopener noreferrer">Visit AnPlayer docs</a>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
 </html>
