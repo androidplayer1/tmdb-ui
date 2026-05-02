@@ -96,6 +96,10 @@ if (config.relevanceSort) {
   document.getElementById('relevanceSort').checked = true;
 }
 
+if (config.scraperTimeout) {
+  document.getElementById('scraperTimeout').value = config.scraperTimeout / 1000;
+}
+
 if (config.debridService === 'alldebrid') {
   document.querySelector('input[name="debridService"][value="alldebrid"]').checked = true;
   document.getElementById('rdFields').classList.add('hidden');
@@ -196,6 +200,8 @@ function buildConfig() {
 
   var ytsEnabled = document.getElementById('ytsEnabled').checked;
   var relevanceSort = document.getElementById('relevanceSort').checked;
+  var scraperTimeoutSec = parseInt(document.getElementById('scraperTimeout').value, 10);
+  var scraperTimeout = (!isNaN(scraperTimeoutSec) && scraperTimeoutSec > 0) ? scraperTimeoutSec * 1000 : undefined;
 
   var jackettEnabled = document.getElementById('jackettEnabled').checked;
   var jackett = undefined;
@@ -219,6 +225,7 @@ function buildConfig() {
   if (adApiKey) result.adApiKey = adApiKey;
   if (!ytsEnabled) result.ytsEnabled = false;
   if (relevanceSort) result.relevanceSort = true;
+  if (scraperTimeout) result.scraperTimeout = scraperTimeout;
   if (jackett) result.jackett = jackett;
 
   return result;
