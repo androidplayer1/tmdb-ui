@@ -10,6 +10,12 @@ var providers = [
   { id: 'magnetdl', label: 'MagnetDL', url: 'https://www.magnetdl.com' },
 ];
 
+// ── Plugin data cache ──
+var pluginData = {
+  torrentie: null,
+  vavoo: null,
+};
+
 // ── AnPlayer bridge ──
 var isAnPlayer = (function () {
   try { return !!anPlayer; } catch (e) { return false; }
@@ -24,6 +30,9 @@ function loadConfig() {
 }
 
 var config = isAnPlayer ? loadConfig() : {};
+
+// ── Active plugin ──
+var activePlugin = 'torrentie';
 
 // ── Theme ──
 function getSystemTheme() {
@@ -48,6 +57,20 @@ document.getElementById('themeToggle').addEventListener('click', function () {
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
   if (currentTheme === 'system') applyTheme('system');
+});
+
+// ── Plugin selector ──
+function switchPlugin(plugin) {
+  activePlugin = plugin;
+  document.getElementById('torrentie-config').classList.toggle('hidden', plugin !== 'torrentie');
+  document.getElementById('vavoo-config').classList.toggle('hidden', plugin !== 'vavoo');
+  renderActions();
+}
+
+document.querySelectorAll('input[name="plugin"]').forEach(function (radio) {
+  radio.addEventListener('change', function () {
+    switchPlugin(this.value);
+  });
 });
 
 // ── Render providers ──
@@ -172,8 +195,8 @@ document.getElementById('jackettEnabled').addEventListener('change', function ()
   document.getElementById('jackettFields').classList.toggle('hidden', !this.checked);
 });
 
-// ── Build config ──
-function buildConfig() {
+// ── Build torrentie config ──
+function buildTorrentieConfig() {
   var selectedProviders = [];
   document.querySelectorAll('[data-provider]').forEach(function (cb) {
     if (cb.checked) selectedProviders.push(cb.getAttribute('data-provider'));
@@ -234,52 +257,64 @@ function buildConfig() {
 // ── Actions ──
 var actionsEl = document.getElementById('actions');
 
-if (isAnPlayer) {
-  var saveBtn = document.createElement('button');
-  saveBtn.className = 'btn btn-primary';
-  saveBtn.textContent = 'Save';
-  saveBtn.addEventListener('click', function () {
-    var cfg = buildConfig();
-    var ok = anPlayer.setConfiguration(JSON.stringify(cfg));
-    if (ok) anPlayer.finish();
-  });
-  actionsEl.appendChild(saveBtn);
-} else {
-  var dlBtn = document.createElement('button');
-  dlBtn.className = 'btn btn-outline';
-  dlBtn.textContent = 'Download';
-  dlBtn.addEventListener('click', function () {
-    var cfg = buildConfig();
-    var plugin = Object.assign({}, window._pluginData || {}, { config: JSON.stringify(cfg) });
-    var blob = new Blob([JSON.stringify(plugin)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'torrentie-' + (cfg.rdApiKey || cfg.adApiKey || 'config') + '.json';
-    a.dispatchEvent(new MouseEvent('click'));
-    URL.revokeObjectURL(url);
-  });
-  actionsEl.appendChild(dlBtn);
+function renderActions() {
+  actionsEl.innerHTML = '';
 
-  var installBtn = document.createElement('button');
-  installBtn.className = 'btn btn-primary';
-  installBtn.textContent = 'Install';
-  installBtn.addEventListener('click', function () {
-    var cfg = buildConfig();
-    var downloadUrl = 'https://androidplayer1.github.io/tmdb-ui/assets/torrentie.json';
-    var params = encodeQueryData({
-      config: JSON.stringify(cfg),
-      downloadUrl: downloadUrl,
+  if (isAnPlayer) {
+    var saveBtn = document.createElement('button');
+    saveBtn.className = 'btn btn-primary';
+    saveBtn.textContent = 'Save';
+    saveBtn.addEventListener('click', function () {
+      var cfg = activePlugin === 'torrentie' ? buildTorrentieConfig() : {};
+      var ok = anPlayer.setConfiguration(JSON.stringify(cfg));
+      if (ok) anPlayer.finish();
     });
-    window.open('anplayer://plugin/install?' + params, '_blank');
-  });
-  actionsEl.appendChild(installBtn);
+    actionsEl.appendChild(saveBtn);
+  } else {
+    var dlBtn = document.createElement('button');
+    dlBtn.className = 'btn btn-outline';
+    dlBtn.textContent = 'Download';
+    dlBtn.addEventListener('click', function () {
+      var cfg = activePlugin === 'torrentie' ? buildTorrentieConfig() : {};
+      var data = pluginData[activePlugin] || {};
+      var plugin = Object.assign({}, data, { config: JSON.stringify(cfg) });
+      var blob = new Blob([JSON.stringify(plugin)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = activePlugin + '.json';
+      a.dispatchEvent(new MouseEvent('click'));
+      URL.revokeObjectURL(url);
+    });
+    actionsEl.appendChild(dlBtn);
+
+    var installBtn = document.createElement('button');
+    installBtn.className = 'btn btn-primary';
+    installBtn.textContent = 'Install';
+    installBtn.addEventListener('click', function () {
+      var cfg = activePlugin === 'torrentie' ? buildTorrentieConfig() : {};
+      var downloadUrl = 'https://androidplayer1.github.io/tmdb-ui/assets/' + activePlugin + '.json';
+      var params = encodeQueryData({
+        config: JSON.stringify(cfg),
+        downloadUrl: downloadUrl,
+      });
+      window.open('anplayer://plugin/install?' + params, '_blank');
+    });
+    actionsEl.appendChild(installBtn);
+  }
 }
 
-// ── Load plugin JSON ──
+renderActions();
+
+// ── Load plugin JSONs ──
 fetch('./assets/torrentie.json')
   .then(function (r) { return r.json(); })
-  .then(function (data) { window._pluginData = data; })
+  .then(function (data) { pluginData.torrentie = data; })
+  .catch(function () {});
+
+fetch('./assets/vavoo.json')
+  .then(function (r) { return r.json(); })
+  .then(function (data) { pluginData.vavoo = data; })
   .catch(function () {});
 
 // ── Util ──
