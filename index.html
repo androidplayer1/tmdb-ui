@@ -155,6 +155,22 @@
             <textarea class="input-field textarea" id="adultKeywords" rows="6"></textarea>
             <div class="input-hint">Edit to add or remove adult filter keywords</div>
           </div>
+          <div class="toggle-row" style="margin-top:0.5rem">
+            <div>
+              <div class="toggle-label">Block Real-Debrid unsupported tags</div>
+              <div class="toggle-sublabel">Skips release tags Real-Debrid now blocks on cached torrents (on by default)</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="blockRdTags" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="conditional" id="rdBlockedKeywordsField">
+            <textarea class="input-field textarea" id="rdBlockedKeywords" rows="4"></textarea>
+            <div class="input-hint">
+              Why these are on by default: Real-Debrid has added automated filename filtering to cached torrents — likely to comply with the EU Digital Services Act after legal pressure in France. Torrents whose names contain these source/quality tags (WEB-DL, WEBRip, BDrip …) or release-group names (YTS, RARBG, AMZN, EZTV …) now return "infringing file" errors and can't be played, so they are skipped by default. Edit to add or remove tags.
+            </div>
+          </div>
         </div>
       </div>
 
