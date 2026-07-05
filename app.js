@@ -100,7 +100,15 @@ if (config.sorting) {
 }
 
 if (config.excludeKeywords) {
-  document.getElementById('excludeKeywords').value = config.excludeKeywords.join(',');
+  // config.excludeKeywords holds the merged list (manual + adult + RD tags).
+  // Show only the user's own keywords here — the injected sets are restored
+  // by their own toggles below.
+  var reservedKeywords = (config.adultKeywords || []).concat(config.rdBlockedKeywords || [])
+    .map(function (s) { return s.toLowerCase(); });
+  var manualKeywords = config.excludeKeywords.filter(function (k) {
+    return reservedKeywords.indexOf(k.toLowerCase()) === -1;
+  });
+  document.getElementById('excludeKeywords').value = manualKeywords.join(', ');
 }
 
 if (config.rdApiKey) {
@@ -181,6 +189,55 @@ blockAdultEl.addEventListener('change', function () {
   }
 });
 
+// ── Real-Debrid unsupported tags filter ──
+// Real-Debrid has implemented automated filename filtering on cached torrents.
+// The blocks — likely prompted by legal pressure in France to comply with the
+// EU Digital Services Act — target common copyright-infringing source/quality
+// tags and release-group names. Torrents whose names contain these tags now
+// return "infringing file" errors and can't be scraped or played, so we skip
+// them by default (the toggle starts on for fresh configs).
+var defaultRdBlockedKeywords = [
+  // Source / quality tags
+  'WEB-DL', 'WEBRip', 'BDrip', 'HDrip', 'DVDrip',
+  // Codec / container tags
+  'BluRay.x264', 'HDTV.x264', 'HDTV.XviD', 'WEB.x264', 'WEB.h264',
+  // Release / tracker groups
+  'YTS', 'RARBG', 'Erai-raws', 'DSNP', 'AMZN', 'TGX', 'EZTV', 'rartv',
+];
+
+var rdBlockedEl = document.getElementById('rdBlockedKeywords');
+var blockRdEl = document.getElementById('blockRdTags');
+var rdFieldEl = document.getElementById('rdBlockedKeywordsField');
+
+// A previously saved config always has `providers`; use it to tell a fresh
+// install (default the filter on) apart from a saved config where the user
+// deliberately turned it off (no rdBlockedKeywords key).
+var hasSavedConfig = config.providers !== undefined;
+
+if (config.rdBlockedKeywords) {
+  blockRdEl.checked = true;
+  rdBlockedEl.value = config.rdBlockedKeywords.join(', ');
+  rdFieldEl.classList.remove('hidden');
+} else if (hasSavedConfig) {
+  blockRdEl.checked = false;
+  rdFieldEl.classList.add('hidden');
+} else {
+  blockRdEl.checked = true;
+  rdBlockedEl.value = defaultRdBlockedKeywords.join(', ');
+  rdFieldEl.classList.remove('hidden');
+}
+
+blockRdEl.addEventListener('change', function () {
+  if (this.checked) {
+    if (!rdBlockedEl.value.trim()) {
+      rdBlockedEl.value = defaultRdBlockedKeywords.join(', ');
+    }
+    rdFieldEl.classList.remove('hidden');
+  } else {
+    rdFieldEl.classList.add('hidden');
+  }
+});
+
 // ── Debrid toggle ──
 document.querySelectorAll('input[name="debridService"]').forEach(function (radio) {
   radio.addEventListener('change', function () {
@@ -213,7 +270,14 @@ function buildTorrentieConfig() {
     adultKw = adultRaw ? adultRaw.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
   }
 
-  var allExcluded = excludeKeywords.concat(adultKw);
+  var blockRdTags = document.getElementById('blockRdTags').checked;
+  var rdKw = [];
+  if (blockRdTags) {
+    var rdRaw = document.getElementById('rdBlockedKeywords').value.trim();
+    rdKw = rdRaw ? rdRaw.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+  }
+
+  var allExcluded = excludeKeywords.concat(adultKw).concat(rdKw);
   var uniqueExcluded = allExcluded.filter(function (v, i, a) { return a.indexOf(v) === i; });
   excludeKeywords = uniqueExcluded.length ? uniqueExcluded : undefined;
 
@@ -244,6 +308,7 @@ function buildTorrentieConfig() {
 
   if (excludeKeywords) result.excludeKeywords = excludeKeywords;
   if (blockAdult && adultKw.length) result.adultKeywords = adultKw;
+  if (blockRdTags && rdKw.length) result.rdBlockedKeywords = rdKw;
   if (rdApiKey) result.rdApiKey = rdApiKey;
   if (adApiKey) result.adApiKey = adApiKey;
   if (!ytsEnabled) result.ytsEnabled = false;
